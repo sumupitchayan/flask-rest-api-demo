@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rest-demo-deployment
+  labels:
+    type: restapi
+spec:
+  selector: 
+    matchLabels:
+      app: rest-demo
+  replicas: 3
+  template:
+    metadata:
+      name: rest-demo
+      labels:
+        app: rest-demo
+    spec:
+      containers:
+        - name: rest-demo
+          image: sumughan124/rest-demo:latest
+          ports:
+            - containerPort: 5000
