@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { App, Chart, ChartProps } from 'cdk8s';
-import { Deployment, Service, ServiceType } from 'cdk8s-plus-25';
+import { Deployment, ServiceType } from 'cdk8s-plus-25';
 
 export class MyChart extends Chart {
   constructor(scope: Construct, id: string, props: ChartProps = { }) {
@@ -9,22 +9,15 @@ export class MyChart extends Chart {
     const label = {app: 'rest-demo'};
 
     // define resources here
-
     new Deployment(this, 'deployment', {
-      containers: [{image: 'sumughan124/flask-rest-demo:latest'}],
+      containers: [ { image: 'sumughan124/flask-rest-demo:latest', portNumber: 5000 } ],
       replicas: 3,
       metadata: {
         labels: label,
-        name: label.app
       }
-    });
-
-    new Service(this, 'service', {
-      type: ServiceType.LOAD_BALANCER,
+    }).exposeViaService({
+      serviceType: ServiceType.LOAD_BALANCER,
       ports: [ { port: 8000, targetPort: 5000 } ],
-      metadata: {
-        name: label.app
-      }
     });
   }
 }
